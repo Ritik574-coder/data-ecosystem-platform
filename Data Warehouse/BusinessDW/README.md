@@ -1,6 +1,6 @@
 ## Project Description
 
-This project focuses on building a comprehensive **Business Data Warehouse** named **BusinessDB** using **SQL Server**, following the industry-standard **Medallion Architecture (Bronze, Silver, Gold)** approach. The main objective of the project is to integrate data from multiple enterprise source systems, apply business logic, and transform raw datasets into structured, analytics-ready information for business decision-making.
+This project focuses on building a comprehensive **Business Data Warehouse** named **BusinessDW** using **SQL Server**, following the industry-standard **Medallion Architecture (Bronze, Silver, Gold)** approach. The main objective of the project is to integrate data from multiple enterprise source systems, apply business logic, and transform raw datasets into structured, analytics-ready information for business decision-making.
 
 The data warehouse ingests data from two primary source systems: **ERP (Enterprise Resource Planning)** and **CRM (Customer Relationship Management)**. Data from both systems was extracted and provided in **CSV file format**, simulating real-world batch data ingestion scenarios.
 
@@ -14,7 +14,7 @@ The ERP source system includes:
 
 * **cust_az12.csv** — customer demographic data such as birth date and gender
 * **loc_a101.csv** — customer geographic information including country mapping linked through customer ID
-* **px_cst_g1v2.csv** — product classification data including category, subcategory, maintenance indicator, and product line (e.g., road, mountain, bike-related classifications)
+* **px_cat_g1v2.csv** — product classification data including category, subcategory, maintenance indicator, and product line (e.g., road, mountain, bike-related classifications)
 
 The project implements a layered transformation process:
 
