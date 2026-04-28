@@ -1,9 +1,0 @@
-CREATE OR ALTER PROCEDURE [Silver].[proc_load_silver] 
-AS
-BEGIN 
-    SET NOCOUNT ON ;
-    SET XACT_ABORT ON ;
-
-    BEGIN TRY
-    BEGIN TRANSACTION ;
-    
