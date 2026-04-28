@@ -68,7 +68,7 @@ Data is ingested from two enterprise systems via **CSV file extracts** (batch in
 |------|-------------|
 | `cust_az12.csv` | Customer demographics — birth date, gender |
 | `loc_a101.csv` | Customer geography — country mapping via customer ID |
-| `px_cst_g1v2.csv` | Product classification — category, subcategory, maintenance indicator, product line |
+| `px_cat_g1v2.csv` | Product classification — category, subcategory, maintenance indicator, product line |
 
 ---
 
