@@ -1,36 +1,229 @@
-## Project Description
+# 🏛️ BusinessDW — Business Data Warehouse
 
-This project focuses on building a comprehensive **Business Data Warehouse** named **BusinessDW** using **SQL Server**, following the industry-standard **Medallion Architecture (Bronze, Silver, Gold)** approach. The main objective of the project is to integrate data from multiple enterprise source systems, apply business logic, and transform raw datasets into structured, analytics-ready information for business decision-making.
-
-The data warehouse ingests data from two primary source systems: **ERP (Enterprise Resource Planning)** and **CRM (Customer Relationship Management)**. Data from both systems was extracted and provided in **CSV file format**, simulating real-world batch data ingestion scenarios.
-
-The CRM source system contains three datasets:
-
-* **cust_info.csv** — customer master information
-* **prd_info.csv** — product details
-* **sales_details.csv** — transactional sales data representing customer orders
-
-The ERP source system includes:
-
-* **cust_az12.csv** — customer demographic data such as birth date and gender
-* **loc_a101.csv** — customer geographic information including country mapping linked through customer ID
-* **px_cat_g1v2.csv** — product classification data including category, subcategory, maintenance indicator, and product line (e.g., road, mountain, bike-related classifications)
-
-The project implements a layered transformation process:
-
-* **Bronze Layer** stores raw data exactly as received from source systems to maintain traceability and auditability.
-* **Silver Layer** performs data cleaning, standardization, integration, and application of business rules to improve data quality and consistency.
-* **Gold Layer** produces business-ready datasets optimized for analytics, reporting, and downstream consumption, typically structured using dimensional modeling concepts.
-
-This project demonstrates practical data engineering capabilities including multi-source data integration, ETL pipeline development, business logic implementation, and modern data warehouse design principles. It simulates a real-world enterprise scenario where operational data is transformed into strategic insights to support business intelligence and decision-making processes.
+> A production-grade **SQL Server Data Warehouse** built using the **Medallion Architecture (Bronze → Silver → Gold)**, integrating multi-source enterprise data into analytics-ready dimensional models.
 
 ---
-👤 Author
 
-Ritik
-Aspiring Data Engineer / Data Scientist
-Focused on building production-grade data systems.
+## 📌 Table of Contents
 
-⭐ Conclusion
+- [Project Overview](#-project-overview)
+- [Architecture](#️-architecture)
+- [Data Sources](#-data-sources)
+- [Data Layers](#-data-layers)
+- [Data Flow & Lineage](#-data-flow--lineage)
+- [ETL Workflow](#-etl-workflow)
+- [Gold Layer Outputs](#-gold-layer-outputs)
+- [Tech Stack](#️-tech-stack)
+- [Author](#-author)
 
-This project represents a complete end-to-end implementation of a business data warehouse, starting from raw data ingestion to business-ready analytical datasets using industry best practices.
+---
+
+## 🧭 Project Overview
+
+**BusinessDW** is a comprehensive Business Data Warehouse built on **SQL Server** that integrates data from two enterprise source systems — **CRM** and **ERP** — and transforms raw operational data into structured, analytics-ready information.
+
+The project follows the **Medallion Architecture** — a layered data design pattern that ensures traceability, data quality, and business-readiness at each stage of the pipeline.
+
+**Key Goals:**
+- Integrate multi-source enterprise data (CRM + ERP)
+- Build a reliable, auditable ingestion pipeline
+- Apply data cleansing, standardization, and business rules
+- Deliver dimensional models ready for BI, reporting, and analytics
+
+---
+
+## 🏗️ Architecture
+
+```
+┌──────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌─────────────────┐
+│  Sources │────▶│    BRONZE    │────▶│    SILVER    │────▶│     GOLD     │────▶│    Consumers    │
+│ CRM / ERP│     │   Raw Data   │     │ Clean & Std  │     │Business-Ready│     │ BI / Analytics  │
+└──────────┘     └──────────────┘     └──────────────┘     └──────────────┘     └─────────────────┘
+```
+---
+## Visual_architeture
+
+![Alt text](/home/ritik/data-ecosystem-platform/Data Warehouse/BusinessDW/Docs/data_architecture.png)
+
+
+The data warehouse is structured as a **SQL Server** database with three schema layers, each serving a distinct purpose in the data pipeline.
+
+---
+
+## 📂 Data Sources
+
+Data is ingested from two enterprise systems via **CSV file extracts** (batch ingestion):
+
+### 🔵 CRM System
+
+| File | Description |
+|------|-------------|
+| `cust_info.csv` | Customer master information |
+| `prd_info.csv` | Product details |
+| `sales_details.csv` | Transactional sales / order records |
+
+### 🟢 ERP System
+
+| File | Description |
+|------|-------------|
+| `cust_az12.csv` | Customer demographics — birth date, gender |
+| `loc_a101.csv` | Customer geography — country mapping via customer ID |
+| `px_cst_g1v2.csv` | Product classification — category, subcategory, maintenance indicator, product line |
+
+---
+
+## 📊 Data Layers
+
+### 🟤 Bronze Layer — Raw Ingestion
+
+| Property | Detail |
+|----------|--------|
+| **Definition** | Raw, unprocessed data — as-is from source systems |
+| **Objective** | Traceability & Debugging |
+| **Object Type** | Tables |
+| **Load Method** | Full Load (Truncate & Insert) |
+| **Transformations** | None (as-is) |
+| **Data Modeling** | None (as-is) |
+| **Target Audience** | Data Engineers |
+
+The Bronze layer preserves the exact source data to enable full auditability and root-cause analysis for any downstream data issues.
+
+---
+
+### ⚪ Silver Layer — Cleansed & Standardized
+
+| Property | Detail |
+|----------|--------|
+| **Definition** | Cleaned & standardized data |
+| **Objective** | Intermediate layer — prepare data for analysis |
+| **Object Type** | Tables |
+| **Load Method** | Full Load (Truncate & Insert) |
+| **Target Audience** | Data Analysts, Data Engineers |
+
+**Transformations applied:**
+- Data Cleansing
+- Data Standardization
+- Data Normalization
+- Derived Columns
+- Data Enrichment
+
+**Key business rules:**
+- Deduplicate customers
+- Standardize product IDs and names
+- Conform customer IDs across ERP and CRM
+- Map country codes
+- Enrich products with classification attributes
+- Validate date and gender values
+- Cleanse sales transactions
+
+---
+
+### 🟡 Gold Layer — Business-Ready
+
+| Property | Detail |
+|----------|--------|
+| **Definition** | Business-Ready data |
+| **Objective** | Provide data for reporting & analytics consumption |
+| **Object Type** | Views |
+| **Load Method** | None (derived from Silver) |
+| **Target Audience** | Data Analysts, Business Users |
+
+**Transformations applied:**
+- Data Integration (joining across domains)
+- Data Aggregation
+- Business Logic & Rules
+
+**Data Modeling patterns:**
+- Star Schema
+- Aggregated Objects
+- Flat Tables
+
+---
+
+## 🔀 Data Flow & Lineage
+
+![Alt text](/home/ritik/data-ecosystem-platform/Data Warehouse/BusinessDW/Docs/data_architecture.png)
+
+Each Bronze table maps 1:1 to a Silver table. Silver tables are then integrated and aggregated into Gold views using business logic and dimensional modeling.
+
+---
+
+## ⚙️ ETL Workflow
+
+<embed src="path/to/document.pdf" width="800" height="600" type="application/pdf">
+
+Each layer follows a consistent 4-phase development workflow:
+
+### 🟤 Bronze Layer
+```
+Analyse               Code                  Validate               Document
+─────────────────    ─────────────────    ──────────────────    ──────────────────
+Interview source  ──▶ Data Ingestion    ──▶ Completeness &    ──▶ Documenting
+system experts        (Stored Proc)          Schema Checks          Versioning in GIT
+```
+
+### ⚪ Silver Layer
+```
+Analyse               Code                  Validate               Document
+─────────────────    ─────────────────    ──────────────────    ──────────────────
+Explore &         ──▶ Data Cleansing    ──▶ Data Correctness  ──▶ Documenting
+Understand Data       (Stored Proc)          Checks                 Versioning in GIT
+                                                                     + Data Flow
+                                                                     + Data Integration
+```
+
+### 🟡 Gold Layer
+```
+Analyse               Code                  Validate               Document
+─────────────────    ─────────────────    ──────────────────    ──────────────────
+Explore &         ──▶ Data             ──▶ Data Integration  ──▶ Documenting
+Understand            Integration           Checks                 Versioning in GIT
+Business Objects      (Stored Proc)                                + Data Model
+                                                                     + Data Catalog
+                                                                     + Data Flow
+```
+
+---
+
+## 🥇 Gold Layer Outputs
+
+The following analytics-ready objects are produced in the Gold layer:
+
+| Object | Type | Description |
+|--------|------|-------------|
+| `dim_customers` | View | Unified customer dimension — integrates CRM + ERP demographics and geography |
+| `dim_products` | View | Enriched product dimension — integrates product details with classification data |
+| `dim_location` | View | Geographic dimension for location-based analytics |
+| `fact_sales` | View | Central sales fact table — transactional order records |
+
+These objects form a **Star Schema** optimized for BI tools, ad-hoc SQL queries, and machine learning pipelines.
+
+---
+
+## 🛠️ Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| **Database** | SQL Server |
+| **ETL / Transformation** | T-SQL Stored Procedures |
+| **Load Strategy** | Batch Processing — Full Load (Truncate & Insert) |
+| **Source Interface** | CSV files (folder-based ingestion) |
+| **Version Control** | Git |
+| **Consumers** | BI & Reporting, Ad-Hoc SQL, Machine Learning |
+
+---
+
+## 👤 Author
+
+**Ritik**
+Aspiring Data Engineer | Focused on building production-grade data systems
+
+---
+
+## ⭐ Conclusion
+
+This project is a complete **end-to-end Business Data Warehouse** implementation — from raw data ingestion to business-ready analytical datasets. It demonstrates real-world data engineering practices including multi-source integration, layered ETL design, data quality management, and dimensional modeling using industry-standard Medallion Architecture principles.
+
+---
+
+*Built with SQL Server · Medallion Architecture · CRM & ERP Integration*
